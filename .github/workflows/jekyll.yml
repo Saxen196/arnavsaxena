@@ -1,0 +1,40 @@
+
+name: Jekyll Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+
+    - name: Install dependencies
+      run: |
+        bundle install
+
+    - name: Build Jekyll site
+      run: |
+        bundle exec jekyll build --verbose
+
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/main'
+      run: |
+        git config --global user.name "Saxen196"
+        git config --global user.email "Saxen196@users.noreply.github.com"
+        git add .
+        git commit -m "Deploy Jekyll site"
+        git push origin main
+
